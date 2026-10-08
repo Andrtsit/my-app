@@ -7,6 +7,8 @@ import { getProduct, getProductIds } from "@/lib/data/products";
 
 type Props = { params: Promise<{ id: string }> };
 
+
+
 function parseId(raw: string) {
   const id = Number(raw);
   return Number.isInteger(id) && id > 0 ? id : null;

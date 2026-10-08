@@ -1,10 +1,13 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from 'next-intl/plugin';
 
 const nextConfig: NextConfig = {
+
   cacheComponents: true,  
   images: {
     remotePatterns: [{ protocol: "https", hostname: "picsum.photos" }],
   },
 };
 
-export default nextConfig;
+const withNextIntl = createNextIntlPlugin();
+export default withNextIntl(nextConfig);

@@ -3,8 +3,7 @@ import Link from "next/link"
 function notfound() {
   return (
     <div>
-      custom not found
-      <Link href={"/"}>Back home</Link>
+      <Link href={"/"}>Custom not found / Back home</Link>
     </div>
   )
 }

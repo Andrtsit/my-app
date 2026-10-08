@@ -1,12 +1,9 @@
 import AddToCartButton from "@/components/cart/AddToCartButton";
 import CartBadge from "@/components/cart/CartBadge";
 import { getProducts } from "@/lib/data/products";
+import { priceFormatter } from "@/lib/priceFormatter";
 import Image from "next/image";
 
-export const priceFormatter = new Intl.NumberFormat("el-GR", {
-  style: "currency",
-  currency: "EUR",
-});
 
 async function Menu() {
   console.log("rerendering menu page")
