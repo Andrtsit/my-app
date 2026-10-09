@@ -4,6 +4,9 @@
   import CartHydrator from "@/components/cart/CartHydrator";
   import { NextIntlClientProvider } from "next-intl";
   import { routing } from "@/i18n/routing";
+import { locale } from "next/root-params";
+import LanguageSelector from "@/components/LanguageSelector";
+import { Suspense } from "react";
 
   export function generateStaticParams() {
     return routing.locales.map((l) => ({ locale: l }));
@@ -29,16 +32,21 @@
   }: Readonly<{
     children: React.ReactNode;
   }>) {
-
+   const lang = await locale();
     
     return (
       <html
-        lang={"el"}
+        lang={lang}
         className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       >
         <body className="min-h-full flex items-center justify-center flex-col">
           <CartHydrator />
-          <NextIntlClientProvider>{children}</NextIntlClientProvider>
+          <NextIntlClientProvider>
+           <Suspense fallback={<div style={{ background: "red", width: 100, height: 30 }} />}>
+            <LanguageSelector />
+          </Suspense>
+            {children}
+          </NextIntlClientProvider>
         </body>
       </html>
     );

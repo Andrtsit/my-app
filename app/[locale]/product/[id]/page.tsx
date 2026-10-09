@@ -34,6 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ProductPage({ params }: Props) {
+  console.log("I rerender cause of locale change ?")
   const id = parseId((await params).id);
   if (!id) notFound();
 

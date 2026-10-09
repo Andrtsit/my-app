@@ -7,7 +7,6 @@ export default function AddToCartButton({
 }: {
   product: Omit<CartItem, "quantity">;
 }) {
-  console.log("rerendering addcartbutton")
   const addItem = useCartStore((s) => s.addItem);
 
   return (
