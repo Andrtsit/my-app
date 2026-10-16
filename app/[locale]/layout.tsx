@@ -2,13 +2,16 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import CartHydrator from "@/components/cart/CartHydrator";
+import CartBadge from "@/components/cart/CartBadge";
 import { NextIntlClientProvider } from "next-intl";
 import { routing } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 import { locale } from "next/root-params";
 import LanguageSelector from "@/components/LanguageSelector";
 import { Suspense } from "react";
 import LoginMenu from "@/components/auth/LoginMenu";
 import AuthProvider from "@/components/auth/AuthProvider";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function generateStaticParams() {
   return routing.locales.map((l) => ({ locale: l }));
@@ -41,15 +44,34 @@ export default async function RootLayout({
       lang={lang}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex items-center justify-center flex-col">
-        <CartHydrator />
+      <body className="min-h-screen bg-background font-sans text-foreground">
         <NextIntlClientProvider>
           <AuthProvider>
-            <Suspense fallback={<select disabled aria-label="Language" />}>
-              <LanguageSelector />
-            </Suspense>
-            <LoginMenu />
-            {children}
+            <CartHydrator />
+            <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
+              <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4">
+                <div className="flex gap-2">
+                <Link
+                  href="/"
+                  className="text-lg font-bold tracking-tight text-primary"
+                  >
+                  🍕 My App
+                </Link>
+                  <Suspense fallback={<Skeleton className="h-8 w-36" />}>
+                    <LanguageSelector />
+                  </Suspense>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Suspense fallback={<Skeleton className="h-8" />}>
+                    <LoginMenu />
+                  </Suspense>
+                  <CartBadge />
+                </div>
+              </div>
+            </header>
+            <main className="mx-auto w-full max-w-6xl px-4 py-8">
+              {children}
+            </main>
           </AuthProvider>
         </NextIntlClientProvider>
       </body>

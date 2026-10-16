@@ -4,6 +4,13 @@ import { useTransition } from 'react';
 import { useLocale } from 'next-intl';
 import { useRouter, usePathname } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 const LABELS: Record<string, string> = {
   el: 'Ελληνικά',
@@ -16,25 +23,25 @@ export default function LanguageSelector() {
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
 
-  function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    const nextLocale = e.target.value;
+  function handleChange(nextLocale: string | null) {
+    if (!nextLocale || nextLocale === locale) return;
     startTransition(() => {
       router.replace(pathname, { locale: nextLocale });
     });
   }
 
   return (
-    <select
-      value={locale}
-      onChange={handleChange}
-      disabled={isPending}
-      aria-label="Language"
-    >
-      {routing.locales.map((l) => (
-        <option key={l} value={l}>
-          {LABELS[l] ?? l}
-        </option>
-      ))}
-    </select>
+    <Select value={locale} onValueChange={handleChange} disabled={isPending}>
+      <SelectTrigger size="sm" className="w-36" aria-label="Language">
+        <SelectValue>{(value: string) => LABELS[value] ?? value}</SelectValue>
+      </SelectTrigger>
+      <SelectContent className="min-w-(--anchor-width)">
+        {routing.locales.map((l) => (
+          <SelectItem key={l} value={l}>
+            {LABELS[l] ?? l}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 }

@@ -1,15 +1,28 @@
-// components/auth/AuthForm.tsx
 "use client";
 
 import { useState, useTransition } from "react";
 import { signIn } from "next-auth/react";
+import { AlertCircle, Loader2 } from "lucide-react";
 import { useRouter, Link } from "@/i18n/navigation";
 import { registerUser } from "@/app/actions/auth";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function AuthForm({ mode }: { mode: "login" | "register" }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const isLogin = mode === "login";
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -45,45 +58,78 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex w-full max-w-sm flex-col gap-3"
-    >
-      {mode === "register" && (
-        <input name="name" placeholder="Name" className="rounded border p-2" />
-      )}
-      <input
-        name="email"
-        type="email"
-        placeholder="Email"
-        required
-        className="rounded border p-2"
-      />
-      <input
-        name="password"
-        type="password"
-        placeholder="Password"
-        required
-        minLength={8}
-        className="rounded border p-2"
-      />
+    <Card className="mx-auto w-full max-w-sm">
+      <CardHeader>
+        <CardTitle className="text-2xl">
+          {isLogin ? "Welcome back" : "Create an account"}
+        </CardTitle>
+        <CardDescription>
+          {isLogin
+            ? "Log in to keep your cart and orders."
+            : "Sign up to start ordering."}
+        </CardDescription>
+      </CardHeader>
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+        <CardContent className="flex flex-col gap-4">
+          {!isLogin && (
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                name="name"
+                placeholder="Your name"
+                autoComplete="name"
+              />
+            </div>
+          )}
 
-      <button
-        type="submit"
-        disabled={isPending}
-        className="rounded bg-black p-2 text-white disabled:opacity-50"
-      >
-        {mode === "login" ? "Log in" : "Create account"}
-      </button>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="you@example.com"
+              autoComplete="email"
+              required
+            />
+          </div>
 
-      <Link
-        href={mode === "login" ? "/register" : "/login"}
-        className="text-sm text-gray-500"
-      >
-        {mode === "login" ? "No account? Register" : "Have an account? Log in"}
-      </Link>
-    </form>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              autoComplete={isLogin ? "current-password" : "new-password"}
+              required
+              minLength={8}
+            />
+          </div>
+
+          {error && (
+            <Alert variant="destructive">
+              <AlertCircle />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+        </CardContent>
+
+        <CardFooter className="flex-col gap-3">
+          <Button type="submit" className="w-full" disabled={isPending}>
+            {isPending && <Loader2 className="animate-spin" />}
+            {isLogin ? "Log in" : "Create account"}
+          </Button>
+
+          <Link
+            href={isLogin ? "/register" : "/login"}
+            className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+          >
+            {isLogin ? "No account? Register" : "Have an account? Log in"}
+          </Link>
+        </CardFooter>
+      </form>
+    </Card>
   );
 }

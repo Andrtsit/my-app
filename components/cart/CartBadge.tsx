@@ -1,19 +1,20 @@
 "use client";
 
+import { ShoppingCart } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { priceFormatter } from "@/lib/priceFormatter";
 import { selectCount, selectTotal, useCartStore } from "@/store/cart";
 
 export default function CartBadge() {
-  console.log("cart badge rerenderingg")
   const count = useCartStore(selectCount);
   const total = useCartStore(selectTotal);
 
   return (
-    <div>
-      <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-black px-2 text-xs font-medium text-white">
-        TotalQuantity: {count}
-      </span>
-       <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-black px-2 text-xs font-medium text-white">
-        TotalPrice: {total / 100}
+    <div className="flex items-center gap-2">
+      <ShoppingCart className="size-5" />
+      <Badge>{count}</Badge>
+      <span className="text-sm font-medium tabular-nums">
+        {priceFormatter.format(total / 100)}
       </span>
     </div>
   );

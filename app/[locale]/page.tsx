@@ -1,15 +1,18 @@
 import { Link } from "@/i18n/navigation";
+import { buttonVariants } from "@/components/ui/button";
 
-async function Home() {
-  
-
+export default function Home() {
   return (
-    <div className="text-2xl">
-     <Link className="text-3xl bold" href={'/menu'}>
-       Menu Link that is locale aware
-     </Link>
-    </div>
-  )
+    <section className="flex flex-col items-center gap-6 py-24 text-center">
+      <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+        Fresh pizza, <span className="text-primary">fast</span>.
+      </h1>
+      <p className="max-w-md text-muted-foreground">
+        Pick your favourites from the menu and we&apos;ll take care of the rest.
+      </p>
+      <Link href="/menu" className={buttonVariants({ size: "lg" })}>
+        View the menu
+      </Link>
+    </section>
+  );
 }
-
-export default Home;
