@@ -17,8 +17,8 @@ model User {
 
 model Product {
   id          Int      @id @default(autoincrement())
-  title       String
-  description String?
+  title_ml      Json
+  description_ml Json
   price       Int      // cents, 1999 = 19.99
   imgSrc      String
   createdAt   DateTime @default(now())

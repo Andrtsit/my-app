@@ -1,3 +1,42 @@
 {
-  "hello" : "hello"
+  "metadata": {
+    "title": "My App - Fresh pizza, fast",
+    "description": "Order fresh pizza online and get it delivered quickly."
+  },
+  "homepage": {
+    "h1": "Fresh pizza, fast.",
+    "p": "Pick your favourites from the menu and we'll take care of the rest.",
+    "link": "View Menu"
+  },
+  "menu": {
+    "title": "Menu",
+    "productCount": "{count, plural, one {# product} other {# products}}"
+  },
+  "product": {
+    "backToMenu": "Back to menu"
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome back",
+      "description": "Log in to keep your cart and orders.",
+      "submit": "Log in",
+      "switch": "No account? Register"
+    },
+    "register": {
+      "title": "Create an account",
+      "description": "Sign up to start ordering.",
+      "submit": "Create account",
+      "switch": "Have an account? Log in"
+    },
+    "fields": {
+      "name": "Name",
+      "namePlaceholder": "Your name",
+      "email": "Email",
+      "emailPlaceholder": "you@example.com",
+      "password": "Password"
+    },
+    "errors": {
+      "invalidCredentials": "Invalid email or password"
+    }
+  }
 }

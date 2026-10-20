@@ -1,17 +1,19 @@
 import { Link } from "@/i18n/navigation";
 import { buttonVariants } from "@/components/ui/button";
+import { getTranslations } from "next-intl/server";
 
-export default function Home() {
+export default async function Home() {
+  const t = await getTranslations("homepage");
   return (
-    <section className="flex flex-col items-center gap-6 py-24 text-center">
+    <section className="flex flex-col items-center gap-6  py-24 text-center">
       <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-        Fresh pizza, <span className="text-primary">fast</span>.
+        {t('h1')}
       </h1>
       <p className="max-w-md text-muted-foreground">
-        Pick your favourites from the menu and we&apos;ll take care of the rest.
+        {t('p')}
       </p>
       <Link href="/menu" className={buttonVariants({ size: "lg" })}>
-        View the menu
+        {t('link')}
       </Link>
     </section>
   );

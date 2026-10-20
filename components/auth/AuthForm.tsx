@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { signIn } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { useRouter, Link } from "@/i18n/navigation";
 import { registerUser } from "@/app/actions/auth";
@@ -19,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function AuthForm({ mode }: { mode: "login" | "register" }) {
+  const t = useTranslations("auth");
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -48,7 +50,7 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
       });
 
       if (result?.error) {
-        setError("Invalid email or password");
+        setError(t("errors.invalidCredentials"));
         return;
       }
 
@@ -60,44 +62,38 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
   return (
     <Card className="mx-auto w-full max-w-sm">
       <CardHeader>
-        <CardTitle className="text-2xl">
-          {isLogin ? "Welcome back" : "Create an account"}
-        </CardTitle>
-        <CardDescription>
-          {isLogin
-            ? "Log in to keep your cart and orders."
-            : "Sign up to start ordering."}
-        </CardDescription>
+        <CardTitle className="text-2xl">{t(`${mode}.title`)}</CardTitle>
+        <CardDescription>{t(`${mode}.description`)}</CardDescription>
       </CardHeader>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         <CardContent className="flex flex-col gap-4">
           {!isLogin && (
             <div className="flex flex-col gap-2">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="name">{t("fields.name")}</Label>
               <Input
                 id="name"
                 name="name"
-                placeholder="Your name"
+                placeholder={t("fields.namePlaceholder")}
                 autoComplete="name"
               />
             </div>
           )}
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t("fields.email")}</Label>
             <Input
               id="email"
               name="email"
               type="email"
-              placeholder="you@example.com"
+              placeholder={t("fields.emailPlaceholder")}
               autoComplete="email"
               required
             />
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{t("fields.password")}</Label>
             <Input
               id="password"
               name="password"
@@ -119,14 +115,14 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
         <CardFooter className="flex-col gap-3">
           <Button type="submit" className="w-full" disabled={isPending}>
             {isPending && <Loader2 className="animate-spin" />}
-            {isLogin ? "Log in" : "Create account"}
+            {t(`${mode}.submit`)}
           </Button>
 
           <Link
             href={isLogin ? "/register" : "/login"}
             className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
           >
-            {isLogin ? "No account? Register" : "Have an account? Log in"}
+            {t(`${mode}.switch`)}
           </Link>
         </CardFooter>
       </form>

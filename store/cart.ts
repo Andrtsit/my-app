@@ -11,6 +11,8 @@ export type CartItem = {
 
 type CartState = {
   items: CartItem[];
+  isDelivery: boolean; // true = delivery, false = takeaway
+  toggleOrderType: () => void;
   addItem: (item: Omit<CartItem, "quantity">) => void;
   removeItem: (id: number) => void;
   setQuantity: (id: number, quantity: number) => void;
@@ -21,6 +23,7 @@ export const useCartStore = create<CartState>()(
   persist(
     (set) => ({
       items: [],
+      isDelivery: true,
 
       addItem: (item) =>
         set((state) => {
@@ -45,18 +48,23 @@ export const useCartStore = create<CartState>()(
               : state.items.map((i) => (i.id === id ? { ...i, quantity } : i)),
         })),
 
+      toggleOrderType: () =>
+        set((state) => ({ isDelivery: !state.isDelivery })),
+
       clear: () => set({ items: [] }),
     }),
     {
       name: "cart",
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ items: state.items }), // persist data, not functions
-      skipHydration: true, // we rehydrate manually after mount (Step 3)
+      partialize: (state) => ({
+        items: state.items,
+        isDelivery: state.isDelivery,
+      }),
+      skipHydration: true, // we rehydrate manually after mount
     }
   )
 );
 
-// Derived values as selectors, so components only re-render when their number changes
 export const selectCount = (s: CartState) =>
   s.items.reduce((sum, i) => sum + i.quantity, 0);
 

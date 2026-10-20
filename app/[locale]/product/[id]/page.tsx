@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import AddToCartButton from "@/components/cart/AddToCartButton";
 import { buttonVariants } from "@/components/ui/button";
@@ -13,6 +14,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { getProduct, getProductIds } from "@/lib/data/products";
+import { localize } from "@/lib/helpers/localize";
 import { priceFormatter } from "@/lib/priceFormatter";
 
 type Props = { params: Promise<{ id: string }> };
@@ -35,9 +37,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const product = await getProduct(id);
   if (!product) return {};
 
+  const locale = await getLocale();
+
   return {
-    title: product.title,
-    description: product.description ?? undefined,
+    title: localize(product.title_ml, locale),
+    description: localize(product.description_ml, locale) || undefined,
   };
 }
 
@@ -48,6 +52,11 @@ export default async function ProductPage({ params }: Props) {
   const product = await getProduct(id);
   if (!product) notFound();
 
+  const t = await getTranslations("product");
+  const locale = await getLocale();
+  const title = localize(product.title_ml, locale);
+  const description = localize(product.description_ml, locale);
+
   return (
     <div className="mx-auto max-w-5xl space-y-6">
       <Link
@@ -55,14 +64,14 @@ export default async function ProductPage({ params }: Props) {
         className={buttonVariants({ variant: "ghost", size: "sm" })}
       >
         <ArrowLeft />
-        Back to menu
+        {t("backToMenu")}
       </Link>
 
       <div className="grid gap-8 md:grid-cols-2">
         <div className="relative aspect-square overflow-hidden rounded-2xl border bg-muted">
           <Image
             src={product.imgSrc}
-            alt={product.title}
+            alt={title}
             fill
             priority
             sizes="(min-width: 768px) 50vw, 100vw"
@@ -72,10 +81,10 @@ export default async function ProductPage({ params }: Props) {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-3xl">{product.title}</CardTitle>
-            {product.description && (
+            <CardTitle className="text-3xl">{title}</CardTitle>
+            {description && (
               <CardDescription className="text-base">
-                {product.description}
+                {description}
               </CardDescription>
             )}
           </CardHeader>
@@ -87,7 +96,7 @@ export default async function ProductPage({ params }: Props) {
             <AddToCartButton
               product={{
                 id: product.id,
-                title: product.title,
+                title,
                 price: product.price,
                 imgSrc: product.imgSrc,
               }}
